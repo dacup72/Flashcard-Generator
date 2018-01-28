@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Flash Card Generator</title>
+
+  <link rel="stylesheet" href="./assets/reset.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+  <script rel="javascript" type="text/javascript" src="./javascript/login.js"></script>
+  <link rel="stylesheet" href="./assets/style.css">
+</head>
+<body>
+
+  <!-- Navbar  -->
+  <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="body_nav">
+    <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4" id="topStuff">
+      </div>
+      <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+        <p id="body_header">Flash Card Fun</p>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="row">
+
+      <!-- SideBar -->
+      <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" id="body_sidebar">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="sidebar_title">
+          <p id="sidebar_title_text">Created Cards</p>
+          <div id="cardStorage">
+        </div>
+        </div>
+      </div>
+
+      <!-- Card Creation Form -->
+      <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10" id="body_card-form">
+        <h3>What type of flash card would you like to create?</h3><br/>
+        <div id="basicInput" class="col-xs-12 col-sm-12 col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-3">
+          <label for="frontCardData" class="col-2 col-form-label">Enter Data for Front of Card (Question)</label>
+          <div class="col-4">
+            <input class="form-control" type="text" value="" id="frontCardData">
+          </div>
+          <label for="backCardData" class="col-2 col-form-label">Enter Data for Back of Card (Answer)</label>
+          <div class="col-4">
+            <input class="form-control" type="text" value="" id="backCardData">
+          </div>
+          <label for="groupName" class="col-2 col-form-label">Enter Group Name for Cards (optional)</label>
+          <div class="col-4">
+            <input class="form-control" type="text" value="" id="groupName">
+          </div>
+        </div>
+        <div data-Choice='basic' data-toggle="tooltip" title="To create a basic card you simply enter the question on the front of the card and the answer on the back of the card." class='btn btn-warning clickHerePlease' id='basicCardSelector'>Basic Card</div>
+        <div data-Choice='cloze' class='btn btn-warning clickHerePlease' data-toggle="tooltip" title="To create a cloze card you must put the exact full question as you wish it to appear, and for the answer it must be contained exactly in the question." id='clozeCardSelector'>Cloze Card</div>
+        <br><br><br>
+        <div class='btn btn-success col-lg-1 col-lg-offset-5' data-toggle="tooltip" id='reviewCardSelector'>Review</div>
+      </div>
+  
+    </div>
+  
+</body>
+</html>
