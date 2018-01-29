@@ -87,6 +87,28 @@ $("#reviewCardSelector").click(function(){
 });
 
 
+// Creates group specific snapshot and deletes data from database
+$('body').on('click', '.btn-danger', function() {
+  let index = $(this).attr("value");
+  let group = this.id;
+  let listnerKeys = firebase.database().ref(`/${userDirectory}/${group}/`);
+
+  listnerKeys.on('value', gotData, errData);
+  function gotData(data) {
+    let dataValue = data.val();
+    let snapKeys = Object.keys(dataValue);
+    database.remove(userDirectory, group, snapKeys[index]);
+  }
+  function errData(errData) {
+    // console.log(`The read failed: ${errData}`);
+  }
+
+  let cardIndex = $(this).attr('data-index') - 10001;
+  cardCreatedArray.splice(cardIndex, 1);
+  printCards();
+});
+
+
 // ==================== FUNCTIONS ====================
 
 
@@ -129,7 +151,7 @@ function createSnapShot () {
 // Pushes new cards into card array based on firebase snapshot and innitiates printCards
 function databasePushCardsToArray () {
   for (key in firebaseSnap) {
-    firebaseGroupSnap = firebaseSnap[key];
+    let firebaseGroupSnap = firebaseSnap[key];
     for(innerKey in firebaseGroupSnap) {
       let currentCard = new Card(firebaseGroupSnap[innerKey].front, firebaseGroupSnap[innerKey].back, firebaseGroupSnap[innerKey].cardType, firebaseGroupSnap[innerKey].group);
       cardCreatedArray.push(currentCard);
@@ -291,26 +313,5 @@ function newPageLayout () {
     }
   });
 };
-
-// Creates group specific snapshot and delets data from database
-$('body').on('click', '.btn-danger', function() {
-  let index = $(this).attr("value");
-  let group = this.id;
-  let listnerKeys = firebase.database().ref(`/${userDirectory}/${group}/`);
-
-  listnerKeys.on('value', gotData, errData);
-  function gotData(data) {
-    let dataValue = data.val();
-    let snapKeys = Object.keys(dataValue);
-    database.remove(userDirectory, group, snapKeys[index]);
-  }
-  function errData(errData) {
-    // console.log(`The read failed: ${errData}`);
-  }
-
-  let cardIndex = $(this).attr('data-index') - 10001;
-  cardCreatedArray.splice(cardIndex, 1);
-  printCards();
-});
 
 });
