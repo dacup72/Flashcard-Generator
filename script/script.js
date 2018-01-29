@@ -40,10 +40,10 @@ class Card {
 // Firebase object for pushing and removing data to database
 const database = {
   add: function(user, group, data) {
-    firebase.database().ref("/" + user + "/" + group + "/").push(data); 
+    firebase.database().ref(`/${user}/${group}/`).push(data); 
   },
   remove: function(user, group, key) {
-    firebase.database().ref("/" + user + "/" + group + "/").child(key).remove();
+    firebase.database().ref(`/${user}/${group}/`).child(key).remove();
   }
 }
 
@@ -78,7 +78,7 @@ $(".createNewCard").click(function() {
 $("#reviewCardSelector").click(function(){
   if (cardCreatedArray.length > 0) {
     currentIndexVal = 1;
-    $('*[data-index=' + currentIndexVal + ']').addClass("animated flip cardBorder");
+    $(`*[data-index=${currentIndexVal}]`).addClass("animated flip cardBorder");
     newPageLayout();
   }
   else {
@@ -95,8 +95,8 @@ firebase.auth().onAuthStateChanged(function(user) {
   if (user) {
     userDirectory = user.uid;
     createSnapShot(userDirectory);
-    $("#topStuff").append("<p>" + user.email + "</p><p>You are logged in.</p>");
-    $("#topStuff").append('<div class="btn btn-warning" id="signOutPeriod">Sign Out</div>');
+    $("#topStuff").append(`<p>${user.email}</p><p>You are logged in.</p>`);
+    $("#topStuff").append(`<div class="btn btn-warning" id="signOutPeriod">Sign Out</div>`);
 
     // If a user wants to sign out
     $("#signOutPeriod").click(function (){
@@ -116,12 +116,12 @@ firebase.auth().onAuthStateChanged(function(user) {
 
 // A one time listener that gives us the cards for that user
 function createSnapShot () {
-  let listener = firebase.database().ref("/" + userDirectory);
+  let listener = firebase.database().ref(`/${userDirectory}`);
   listener.once("value", function (snapshot) {
     firebaseSnap = snapshot.val();
     databasePushCardsToArray();
   }, function (errorObject) {
-    console.log("The read failed: " + errorObject.code);
+    console.log(`The read failed: ${errorObject.code}`);
   });
 };
 
@@ -148,12 +148,29 @@ function printCards () {
   $("#cardStorage").empty();
   for (let i = 0; i < cardCreatedArray.length;i++){   
     if (cardCreatedArray[i].group === prevGroup){
-      $("#cardStorage").append("<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'><div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 card-border'><p class='cardSidebarText'>Card " + (i + 1) + "</p><img data-index='" + (i + 1) + "' id='" + groupIndex + "' class='col-xs-3 col-sm-3 col-md-8 col-lg-8 img-responsive showCard' src='./assets/images/indexfront.jpg' alt='Index Card Place holder, click to view.'><span class='btn btn-danger' id='" + cardCreatedArray[i].group + "' value='" + groupIndex + "' data-index='" + (i + 10001) + "'>Delete</span></div></div>");
+      $("#cardStorage").append(`
+                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                  <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 card-border'>
+                                    <p class='cardSidebarText'>Card${(i + 1)}</p>
+                                    <img data-index=${(i + 1)} id=${groupIndex} class='col-xs-3 col-sm-3 col-md-8 col-lg-8 img-responsive showCard' src='./assets/images/indexfront.jpg' alt='Index Card Place holder.'>
+                                    <span class='btn btn-danger' id=${cardCreatedArray[i].group} value=${groupIndex} data-index=${(i + 10001)}>Delete</span>
+                                  </div>
+                                </div>
+                              `);
       groupIndex++;
     }
     else {
       groupIndex = 0;
-    $("#cardStorage").append("<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'><p class='cardSidebarGroup'>Group: " + cardCreatedArray[i].group + "</p><div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 card-border'><p class='cardSidebarText'>Card " + (i + 1) + "</p><img data-index='" + (i + 1) + "' id='" + groupIndex + "' class='col-xs-3 col-sm-3 col-md-8 col-lg-8 img-responsive showCard' src='./assets/images/indexfront.jpg' alt='Index Card Place holder, click to view.'><span class='btn btn-danger' id='" + cardCreatedArray[i].group + "' value='" + groupIndex + "' data-index='" + (i + 10001) + "'>Delete</span></div></div>");
+    $("#cardStorage").append(`
+                              <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+                                <p class='cardSidebarGroup'>Group: ${cardCreatedArray[i].group}</p>
+                                <div class='col-xs-12 col-sm-12 col-md-12 col-lg-12 card-border'>
+                                  <p class='cardSidebarText'>Card ${(i + 1)}</p>
+                                  <img data-index=${(i + 1)} id=${groupIndex} class='col-xs-3 col-sm-3 col-md-8 col-lg-8 img-responsive showCard' src='./assets/images/indexfront.jpg' alt='Index Card Place holder.'>
+                                  <span class='btn btn-danger' id=${cardCreatedArray[i].group} value=${groupIndex} data-index=${(i + 10001)}>Delete</span>
+                                </div>
+                              </div>
+                            `);
       prevGroup = cardCreatedArray[i].group;
     }
   }
@@ -171,8 +188,31 @@ function printCards () {
 // Builds out new display for landing page and house related functions for the new layout
 function newPageLayout () {
   // Creates new layout for landing page
-  $("#body_card-form").empty().append('<div id="backToCardCreationButton"><span class="glyphicon glyphicon-menu-left"></span>Create More Cards</div><div id="displayAnsRight"></div><div class="row"><p class="topDisplayText">Group: ' + cardCreatedArray[currentIndexVal -1].group + '</p><p class="topDisplayTextTwo">Card ' + currentIndexVal + '</p><div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" id="leftSideCards"><div class="btn btn-success topDisplayButt" id="revealFront">Reveal Front of Card</div><div id="displayAnsLeft"></div><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="displayCardsLeft"><img src="./assets/images/indexfront.jpg" alt="Front of Index Card" class="img-responsive imgBorder" id="cardFrontFlip"></div><div class="btn btn-primary" id="revealPrev">Reveal the Previous card</div></div><div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" id="rightSideCards"><div class="btn btn-success topDisplayButtTwo" id="revealBack">Reveal Back of Card</div><div id="displayAnsRight"></div><div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="displayCardsRight"><img src="./assets/images/indexback.jpg" alt="Back of Index Card" class="img-responsive imgBorderTwo" id="cardBackFlip"></div><div class="btn btn-primary" id="revealNext">Reveal the Next card</div></div></div>');
-  
+  $('#body_card-form').empty().append(`
+                                        <div id="backToCardCreationButton"><span class="glyphicon glyphicon-menu-left createMore"></span>Create More Cards</div>
+                                        <div id="displayAnsRight"></div>
+                                        <div class="row">
+                                          <p class="topDisplayText">Group: ${cardCreatedArray[currentIndexVal -1].group}</p>
+                                          <p class="topDisplayTextTwo">Card ${currentIndexVal}</p>
+                                          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" id="leftSideCards">
+                                            <div class="btn btn-success topDisplayButt" id="revealFront">Reveal Front of Card</div>
+                                            <div id="displayAnsLeft"></div>
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="displayCardsLeft">
+                                              <img src="./assets/images/indexfront.jpg" alt="Front of Index Card" class="img-responsive imgBorder" id="cardFrontFlip">
+                                            </div>
+                                            <div class="btn btn-primary" id="revealPrev">Reveal the Previous card</div>
+                                          </div>
+                                          <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" id="rightSideCards">
+                                            <div class="btn btn-success topDisplayButtTwo" id="revealBack">Reveal Back of Card</div>
+                                            <div id="displayAnsRight"></div>
+                                            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" id="displayCardsRight">
+                                              <img src="./assets/images/indexback.jpg" alt="Back of Index Card" class="img-responsive imgBorderTwo" id="cardBackFlip">
+                                            </div>
+                                            <div class="btn btn-primary" id="revealNext">Reveal the Next card</div>
+                                          </div>
+                                        </div>
+                                      `);
+
   // Back button to return to default landing page
   $("#backToCardCreationButton").click(()=>{
     window.location.href="landing.html";
@@ -184,10 +224,10 @@ function newPageLayout () {
       setTimeout(()=>{
         if (cardCreatedArray[currentIndexVal-1].cardType === "basic") {
           frontRevealed = true;
-          $("#displayCardsLeft").prepend("<div class='cardAnswerBoxLeft'><p class='answerDisplay'>" + cardCreatedArray[currentIndexVal -1].front + "</p></div>");
+          $("#displayCardsLeft").prepend(`<div class='cardAnswerBoxLeft'><p class='answerDisplay'>${cardCreatedArray[currentIndexVal -1].front}</p></div>`);
         } else {
           frontRevealed = true;
-          $("#displayCardsLeft").prepend("<div class='cardAnswerBoxLeft'><p class='answerDisplay'>" + (cardCreatedArray[currentIndexVal -1].front).replace(cardCreatedArray[currentIndexVal -1].back, "______") + "</p></div>");
+          $("#displayCardsLeft").prepend(`<div class='cardAnswerBoxLeft'><p class='answerDisplay'>${(cardCreatedArray[currentIndexVal -1].front).replace(cardCreatedArray[currentIndexVal -1].back, "______")}</p></div>`);
         };
       }, 800);
     }
@@ -202,10 +242,10 @@ function newPageLayout () {
       if (cardCreatedArray[currentIndexVal-1].cardType === "basic") {
         backRevealed = true;
         console.log(cardCreatedArray[currentIndexVal -1]);
-        $("#displayCardsRight").prepend("<div class='cardAnswerBoxRight'><p class='answerDisplay'>" + cardCreatedArray[currentIndexVal -1].back + "</p></div>");
+        $("#displayCardsRight").prepend(`<div class='cardAnswerBoxRight'><p class='answerDisplay'>${cardCreatedArray[currentIndexVal -1].back}</p></div>`);
       } else {
         backRevealed = true;
-        $("#displayCardsRight").prepend("<div class='cardAnswerBoxRight'><p class='answerDisplay'>" + cardCreatedArray[currentIndexVal -1].front + "</p></div");
+        $("#displayCardsRight").prepend(`<div class='cardAnswerBoxRight'><p class='answerDisplay'>${cardCreatedArray[currentIndexVal -1].front}</p></div`);
       };
     }, 800);
     $("#cardBackFlip").addClass("animated flip");
@@ -221,14 +261,14 @@ function newPageLayout () {
       $("#displayCardsLeft").empty();
       $("#displayCardsRight").empty();
       currentIndexVal++;
-      $('*[data-index=' + currentIndexVal + ']').addClass("animated flip cardBorder");
+      $(`*[data-index=${currentIndexVal}]`).addClass("animated flip cardBorder");
       frontRevealed = false;
       backRevealed = false;
       newPageLayout();
     }
     else{
       alert("No more cards to show currently");
-      $('*[data-index=' + currentIndexVal + ']').addClass("cardBorder");
+      $(`*[data-index=${currentIndexVal}]`).addClass("cardBorder");
     }
   });
 
@@ -238,13 +278,13 @@ function newPageLayout () {
     $(".showCard").removeClass("animated flip cardBorder");
     if (currentIndexVal <= 1){
       alert("You are already at the beginning.");
-      $('*[data-index=' + currentIndexVal + ']').addClass("cardBorder");
+      $(`*[data-index=${currentIndexVal}]`).addClass("cardBorder");
     }
     else{
       $("#displayCardsLeft").empty();
       $("#displayCardsRight").empty();
       currentIndexVal--;
-      $('*[data-index=' + currentIndexVal + ']').addClass("animated flip cardBorder");
+      $(`*[data-index=${currentIndexVal}]`).addClass("animated flip cardBorder");
       frontRevealed = false;
       backRevealed = false;
       newPageLayout();
