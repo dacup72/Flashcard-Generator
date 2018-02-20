@@ -111,7 +111,10 @@ label {
 
 
 /* JAVASCRIPT */
-
+#backToCardCreationButton {
+  background: black;
+  font-size: 50px;
+}
 
 #basicCardSelector {
   margin-left: 34%;
@@ -190,6 +193,11 @@ label {
 #revealPrev {
   margin-left:32%;
   margin-top: 1%;
+}
+
+.cardImg {
+  width: 60%;
+  height: 60px;
 }
 
 .cardAnswerBoxLeft {
