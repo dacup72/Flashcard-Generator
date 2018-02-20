@@ -13,7 +13,7 @@ body {
 }
 
 #body_container {
-  background-color: rgb(33, 150, 48);
+  background-image: url('./images/indexbackground.jpg');
   min-height: 750px;
   height: 100vh;
   text-align: center;
@@ -38,8 +38,13 @@ label {
   font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
+#signUpText {
+  color: white;
+}
+
 #form_login_text {
   font-size: 20px;
+  color: white;
 }
 
 #form_login {
@@ -49,6 +54,10 @@ label {
 
 #form_login_signup {
   margin-left: 2%;
+}
+
+.topText {
+  color: white;
 }
 
 

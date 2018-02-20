@@ -45,7 +45,7 @@ $(document).ready(function () {
   // Allows users to sign up through firebase
   $("#form_login_signup").click(function () {
     let signUpHtml = `
-      <h1>Sign up</h1>
+      <h1 id="signUpText">Sign up</h1>
       <div class="form-group">
         <label for="signUpEmail">Email address</label>
         <input type="email" class="form-control" id="signUpEmail" aria-describedby="emailHelp" placeholder="Enter email">
